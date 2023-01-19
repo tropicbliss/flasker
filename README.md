@@ -22,5 +22,5 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
 5. Run the web server by running the following commands:
 
 ```bash
-python main.py
+poetry run python main.py
 ```
