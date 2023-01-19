@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "flasker"
+version = "0.1.0"
+description = ""
+authors = ["tropicbliss <48951297+tropicbliss@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+flask = "^2.2.2"
+flask-sqlalchemy = "^3.0.2"
+mysql-connector-python = "^8.0.32"
+
+
+[tool.poetry.group.dev.dependencies]
+pylint = "^2.15.10"
+autopep8 = "^2.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
