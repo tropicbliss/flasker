@@ -8,13 +8,13 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 
-class Book(db.Model: any):
+class Book(db.Model):
     __tablename__ = "book"
 
-    isbn13: str = db.Column(db.String(13), primary_key=True)
-    title: str = db.Column(db.String(64), nullable=False)
-    price: float = db.Column(db.Float(precision=2), nullable=False)
-    availability: int = db.Column(db.Integer)
+    isbn13 = db.Column(db.String(13), primary_key=True)
+    title = db.Column(db.String(64), nullable=False)
+    price = db.Column(db.Float(precision=2), nullable=False)
+    availability = db.Column(db.Integer)
 
     def __init__(self, isbn13: str, title: str, price: float, availability: int):
         self.isbn13 = isbn13
@@ -29,17 +29,60 @@ class Book(db.Model: any):
 @app.get("/book")
 def get_all():
     booklist = Book.query.all()
-    pass
+    if len(booklist):
+        return jsonify({
+            "code": 200,
+            "data": {
+                "books": [book.json() for book in booklist]
+            }
+        })
+    return jsonify({
+        "code": 404,
+        "message": "There are no books."
+    }), 404
 
 
 @app.route("/book/<string:isbn13>")
 def find_by_isbn13(isbn13):
-    pass
+    book = Book.query.filter_by(isbn13=isbn13).first()
+    if book:
+        return jsonify({
+            "code": 200,
+            "data": book.json()
+        })
+    return jsonify({
+        "code": 404,
+        "message": "Book not found."
+    })
 
 
 @app.post("/book/<string:isbn13>")
 def create_book(isbn13):
-    pass
+    if Book.query.filter_by(isbn13=isbn13).first():
+        return jsonify({
+            "code": 400,
+            "data": {
+                "isbn13": isbn13
+            },
+            "message": "Book already exists."
+        })
+    data = request.get_json()
+    book = Book(isbn13, **data)
+    try:
+        db.session.add(book)
+        db.session.commit()
+    except:
+        return jsonify({
+            "code": 500,
+            "data": {
+                "isbn13": isbn13
+            },
+            "message": "An error occurred creating the book."
+        }), 500
+    return jsonify({
+        "code": 201,
+        "data": book.json()
+    })
 
 
 if __name__ == "__main__":
