@@ -9,6 +9,7 @@ db = SQLAlchemy(app)
 
 
 class Book(db.Model):
+    # This is a comment
     __tablename__ = "book"
 
     isbn13 = db.Column(db.String(13), primary_key=True)
